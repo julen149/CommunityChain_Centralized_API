@@ -34,6 +34,9 @@ public class Contract {
     @Column(name="cost", nullable = false)
     private int cost;
 
+    @Column(name="name", nullable = false)
+    private String name;
+
     @Column(name="most", nullable = false)
     private int most = 0;
 
@@ -55,9 +58,10 @@ public class Contract {
 
     public Contract() {}
 
-    public Contract(int Id, int cost) {
+    public Contract(int Id, int cost, String name) {
         this.id = Id;
         this.cost = cost;
+        this.name = name;
     }
 
     public int getId() {
@@ -134,5 +138,13 @@ public class Contract {
 
     public void addUser(User_contract user) {
         this.hasUser.add(user);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

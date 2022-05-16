@@ -63,6 +63,15 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public String setLedgerId(int contractId, String ledgerId) {
+
+        Contract contract = contractDAO.findById(contractId);
+        contract.setLedgerId(ledgerId);
+        contractDAO.save(contract);
+        return ledgerId;
+    }
+
+    @Override
     public void voteContract(int contractId, int userId, boolean vote) {
 
         User u = userDAO.findById(userId);
@@ -82,7 +91,10 @@ public class ContractServiceImpl implements ContractService {
                 Contract c1 = uc.getContract();
                 
                 if ((uc.getVoted() == false) && (c1.equals(c))) {
-                    if (vote == true) c1.setVote(c1.getVote() + 1);
+                    if (vote == true) {
+                        c1.setVote(c1.getVote() + 1);
+                        if ((c1.getMost()/2) <= c1.getVote()) c1.setApproved(true);
+                    } 
                     if (vote == false) c1.setNay(c1.getNay() + 1);
                     re = true;
                     uc.setVoted(true);

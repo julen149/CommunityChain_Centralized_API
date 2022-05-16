@@ -14,6 +14,8 @@ public interface ContractService {
 
     public CommunityOutput getComm(int contractId);
 
+    public String setLedgerId(int contractId, String ledgerId);
+
     public void save(Contract contract);
 
     public void voteContract(int contractId, int userId, boolean vote);

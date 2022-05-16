@@ -3,13 +3,16 @@ package com.communitychain.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import net.bytebuddy.utility.RandomString;
 
 import com.communitychain.dao.UserDAO;
 import com.communitychain.entity.Pert_com;
 import com.communitychain.entity.User;
+import com.communitychain.exceptions.AlreadyLoginException;
+import com.communitychain.inputs.UserLogin;
 import com.communitychain.outputs.CommunityOutput;
 import com.communitychain.outputs.UserOutput;
 
@@ -53,6 +56,19 @@ public class UserServiceImpl implements UserService {
         return result;
     }
     
+    @Override
+    public String getUserToken(String username) {
+
+        for (User u: userDAO.findAll()) {
+			
+            if (u.getUsername().equals(username)) {
+
+                return u.getToken();
+            }
+		}
+
+        return "ERROR";
+    }
 
     @Override
     public void saveUpdate(User user) {
@@ -76,6 +92,45 @@ public class UserServiceImpl implements UserService {
 
         userDAO.save(user);
     }
+
+    public String loginUser(UserLogin userLogin) {
+			
+        for (User u: userDAO.findAll()) {
+			
+            if (u.getUsername().equals(userLogin.getUsername())) {
+
+                if (u.getToken() != null && !u.getToken().equals("AUTH")) throw new AlreadyLoginException();
+                if (u.getPassword().equals(userLogin.getPassword())) {
+
+                    String token = RandomString.make();
+                    u.setToken(token);
+                    userDAO.save(u);
+                    return token;
+                }
+                else return "Wrong password";
+            }
+
+		}
+        return "LoginError";
+	}
+
+    public String logoutUser(String username) {
+			
+        for (User u: userDAO.findAll()) {
+			
+            if (u.getUsername().equals(username)) {
+
+                if (u.getToken() != null && !u.getToken().equals("AUTH")) {
+
+                    u.setToken("AUTH");
+                    userDAO.save(u);
+                    return "Logout CORRECTO!";
+                }
+                else return "User not Loged IN!";
+            }
+		}
+        return "LoginError";
+	}
 
     @Override
     public void deleteById(int id) {

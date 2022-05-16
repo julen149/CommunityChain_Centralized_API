@@ -66,6 +66,9 @@ public class User {
     )
     private List<User_contract> userContracts = new ArrayList<>();
 
+    @Column(name="token", nullable = false)
+    private String token = "AUTH";
+
     public User() {}
 
     public User(int id, String email, String name, String username, String password, Date dob) {
@@ -171,5 +174,13 @@ public class User {
 
     public void addContract(User_contract contract) {
         this.userContracts.add(contract);
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

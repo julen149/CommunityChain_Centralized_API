@@ -63,6 +63,13 @@ public class ContractRestController {
         return contractO;
     }
 
+    @PostMapping("/contracts/setLedgerId/{contractId}/{ledgerId}")
+    @Transactional
+    public String setLedgerId(@PathVariable int contractId, @PathVariable String ledgerId) {
+        
+        return contractService.setLedgerId(contractId, ledgerId);
+    }
+
     @PostMapping("/contracts/{contractId}/{userId}/{vote}")
     @Transactional
     public String voteContract(@PathVariable int contractId, @PathVariable int userId, @PathVariable boolean vote) {

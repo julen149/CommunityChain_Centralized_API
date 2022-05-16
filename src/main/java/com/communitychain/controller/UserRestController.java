@@ -1,7 +1,6 @@
 package com.communitychain.controller;
 
 import java.util.List;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.communitychain.entity.User;
+import com.communitychain.inputs.UserLogin;
 import com.communitychain.outputs.CommunityOutput;
 import com.communitychain.outputs.UserOutput;
 import com.communitychain.service.UserService;
@@ -44,6 +44,17 @@ public class UserRestController {
         return user;
     }
 
+    @PostMapping(path = "/users/login")
+    @Transactional
+    public String loginUser(@RequestBody UserLogin userLogin) {
+        return userService.loginUser(userLogin);
+    }
+
+    @PostMapping(path = "/users/logout/{username}")
+    @Transactional
+    public String logoutUser(@PathVariable String username) {
+        return userService.logoutUser(username);
+    }
     
     @GetMapping("/users/communities/{userId}")
     public List<CommunityOutput> getUserCommunities(@PathVariable int userId){
@@ -53,6 +64,14 @@ public class UserRestController {
         return uc;
     }
     
+    @GetMapping("/users/getToken/{username}")
+    public String getUserToken(@PathVariable String username){
+        
+        String token = userService.getUserToken(username);
+        
+        return token;
+    }
+
 
     @PostMapping("/users")
     public UserOutput addUser(@RequestBody User user) {
