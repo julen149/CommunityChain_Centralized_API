@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.communitychain.entity.User;
+import com.communitychain.inputs.UserInput;
 import com.communitychain.inputs.UserLogin;
 import com.communitychain.outputs.CommunityOutput;
 import com.communitychain.outputs.UserOutput;
@@ -41,6 +42,16 @@ public class UserRestController {
             throw new RuntimeException("User id not found -"+userId);
         }
         
+        return user;
+    }
+
+    @GetMapping("/users/username/{username}")
+    public UserOutput getUserByUsername(@PathVariable String username){
+        UserOutput user = userService.findByUsername(username);
+
+        if(user == null) {
+            throw new RuntimeException("User id not found -"+username);
+        }   
         return user;
     }
 
@@ -97,6 +108,13 @@ public class UserRestController {
         return uo;
     }
 
+    @PutMapping("/users/changeuser")
+    @Transactional
+    public UserOutput updateU(@RequestBody UserInput user) {
+
+        UserOutput uo = userService.saveUpdate2(user);
+        return uo;
+    }
     
     @DeleteMapping("users/{userId}")
     @Transactional

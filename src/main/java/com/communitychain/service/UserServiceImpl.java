@@ -12,6 +12,7 @@ import com.communitychain.dao.UserDAO;
 import com.communitychain.entity.Pert_com;
 import com.communitychain.entity.User;
 import com.communitychain.exceptions.AlreadyLoginException;
+import com.communitychain.inputs.UserInput;
 import com.communitychain.inputs.UserLogin;
 import com.communitychain.outputs.CommunityOutput;
 import com.communitychain.outputs.UserOutput;
@@ -42,6 +43,17 @@ public class UserServiceImpl implements UserService {
         return uo;
     }
 
+    @Override
+    public UserOutput findByUsername(String username) {
+        
+        for (User u: userDAO.findAll()) {
+			
+            if (u.getUsername().equals(username)) {
+                return new UserOutput(u);
+            }
+		}
+        return new UserOutput();
+    }
     
     @Override
     public List<CommunityOutput> getUserComm(int userId) {
@@ -85,6 +97,24 @@ public class UserServiceImpl implements UserService {
 
         userDAO.save(user2);
 
+    }
+
+    @Override
+    public UserOutput saveUpdate2(UserInput user) {
+
+        for (User u: userDAO.findAll()) {
+			
+            if (u.getToken().equals(user.getToken())) {
+
+                if (u.getEmail() != user.getEmail()) u.setEmail(user.getEmail());
+                if (u.getName() != user.getName()) u.setName(user.getName());
+                if (u.getUsername() != user.getUsername()) u.setUsername(user.getUsername());
+                u.setUpdatedAt(new Date(System.currentTimeMillis()));
+                userDAO.save(u);
+                return new UserOutput(u);
+            }
+		}
+        return new UserOutput();
     }
 
     @Override
